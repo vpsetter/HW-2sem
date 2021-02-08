@@ -2,6 +2,8 @@
 
 void g() {}
 
+void h() {}
+
 int error()
 {
 	return -1;

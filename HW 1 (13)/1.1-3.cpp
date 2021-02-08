@@ -1,5 +1,7 @@
 #include <iostream>
 
+void g() {}
+
 int error()
 {
 	return -1;

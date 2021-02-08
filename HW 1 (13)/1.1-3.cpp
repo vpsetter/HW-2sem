@@ -1,5 +1,7 @@
 #include <iostream>
 
+void m() {}
+
 void g() {}
 
 void h() {}

@@ -21,6 +21,7 @@ int main()
 	std::cout << "Hello, chief!\n";
 
 	std::cout << f(14, 11) << "\n";
+	std::cout << average(1.0, 19.0);
 
 	return 0;
 }

@@ -14,12 +14,20 @@ public:
 	using time_point_t = clock_t::time_point;
 	using duration_t = clock_t::duration;
 
-	Timer(const std::string& name = "Timer") : m_begin(clock_t::now()), m_name(name), m_time_value(0), is_stopped (false) {}
+	Timer(const std::string& name = "Timer") : m_begin(clock_t::now()), m_name(name), m_time_value(duration_t::zero()), is_stopped (false) {}
 
-	~Timer()
+	~Timer() noexcept
 	{
-		stop();
-		std::cout << m_name << ": " << std::chrono::duration_cast <Units> (m_time_value).count() << " " << units() << "\n";
+		try
+		{
+			stop();
+			std::cout << m_name << ": " << std::chrono::duration_cast <Units> (m_time_value).count() << " " << units() << "\n";
+		}
+		catch (...)
+		{
+			std::cout << "\nDTOR ERROR!\n";
+			std::abort();
+		}
 	};
 
 	void stop()
@@ -43,49 +51,44 @@ public:
 	void restart()
 	{
 		m_begin = clock_t::now();
-		m_time_value = 0;
+		m_time_value = duration_t::zero();
 		is_stopped = false;
 	}
 
-	int current_time()
+	auto current_time()
 	{
 		stop();
-		int result = std::chrono::duration_cast <Units>(m_time_value).count();
+		auto result = std::chrono::duration_cast <Units>(m_time_value).count();
 		contin();
 		return result;
 	}
 
 private:
-	std::string units()
+	std::string units() const
 	{
-		std::string unit = "";
 		switch (Units::period::den)
 		{
 		case 1'000'000'000:
-			unit = "nanoseconds";
-			break;
+			return "nanoseconds";
 		case 1'000'000:
-			unit = "microseconds";
-			break;
+			return "microseconds";
 		case 1'000:
-			unit = "milliseconds";
-			break;
-		default:
+			return "milliseconds";
+		case 1:
 			switch (Units::period::num)
 			{
+			case 1:
+				return "seconds";
 			case 60:
-				unit = "minutes";
-				break;
+				return "minutes";
 			case 3600:
-				unit = "hours";
-				break;
+				return "hours";
 			default:
-				unit = "seconds";
-				break;
+				return "unknown units\n";
 			}
+		default:
+			return "unknown units\n";
 		}
-
-		return unit;
 	}
 
 	bool is_stopped;

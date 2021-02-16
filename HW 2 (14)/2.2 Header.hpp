@@ -58,9 +58,13 @@ public:
 
 	auto current_time()
 	{
+		bool was_stopped = is_stopped;
 		stop();
 		auto result = std::chrono::duration_cast <Units>(m_time_value).count();
-		contin();
+		if (!was_stopped) 
+		{ 
+			contin();
+		}
 		return result;
 	}
 

@@ -35,36 +35,41 @@ int main()
 	{
 		Timer_t vector_time("vector sort time");
 		std::sort(vector.begin(), vector.end(), desc);
+		vector_time.stop();
 		results.push_back(Timer_result ("vector", vector_time.current_time()));
 	}
 
 	{
 		Timer_t array_time("array sort time");
 		std::sort(array.begin(), array.end(), desc);
+		array_time.stop();
 		results.push_back(Timer_result("array", array_time.current_time()));
 	}
 
 	{
 		Timer_t deque_time("deque sort time");
 		std::sort(deque.begin(), deque.end(), desc);
+		deque_time.stop();
 		results.push_back(Timer_result("deque", deque_time.current_time()));
 	}
 
 	{
 		Timer_t list_time("list sort time");
-		list.sort();
+		list.sort(desc);
+		list_time.stop();
 		results.push_back(Timer_result("list", list_time.current_time()));
 	}
 
 	{
 		Timer_t forward_list_time("forward_list sort time");
-		forward_list.sort();
+		forward_list.sort(desc);
+		forward_list_time.stop();
 		results.push_back(Timer_result("forward_list", forward_list_time.current_time()));
 	}
 
 	std::sort(results.begin(), results.end(), asc_time);
 	results.shrink_to_fit();
-	for (auto i = 0U; i < results.capacity(); ++i)
+	for (auto i = 0U; i < results.size(); ++i)
 	{
 		results[i].m_place = i + 1;
 		results[i].m_relative_time = static_cast <double> (results[i].m_time) / static_cast <double> (results[0].m_time);

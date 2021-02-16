@@ -19,9 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="2.1.cpp" />
     <ClCompile Include="2.2.cpp" />
-    <ClCompile Include="2.3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2.2 Header.hpp" />

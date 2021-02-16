@@ -58,14 +58,19 @@ int main()
 
 	auto required_size = v5.capacity();
 
+	std::string error = "";
 	while(required_size == v5.capacity())
 	{
-		required_size *= 2;
+		(required_size *= 3) /= 2;
 		try
 		{
 			v5.reserve(required_size);
 		}
-		catch(...){}
+		catch (const std::exception& exception)
+		{
+			error = exception.what();
+		}
+		catch (...) { std::abort(); }
 	}
 
 	std::cout << "size of v5 before resizing by v5.reserve(): "
@@ -74,6 +79,7 @@ int main()
 		<< required_size << '\n';
 	std::cout << "size of v5 after unsuccessful attempt of v5.reserve(): " 
 		<< v5.capacity() << '\n'; // size of v5 wasn't changed
+	std::cout << "exception (error message): " << error << '\n';
 
 	while (true)
 	{
@@ -81,10 +87,16 @@ int main()
 		{
 			v5.push_back(0);
 		}
-		catch (...) { break; }
+		catch (const std::exception& exception)
+		{
+			error = exception.what();
+			break;
+		}
+		catch (...) { std::abort(); }
 	}
 	
 	std::cout << "final size of v5 if we add elements by v5.push_back(): " << v5.capacity() << '\n'; // or x1.5, or nothing
+	std::cout << "new exception (error message): " << error << '\n';
 
 	return 0;
 }

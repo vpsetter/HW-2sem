@@ -61,7 +61,7 @@ int main()
 	std::string error = "";
 	while(required_size == v5.capacity())
 	{
-		(required_size *= 3) /= 2;
+		required_size *= 2;
 		try
 		{
 			v5.reserve(required_size);

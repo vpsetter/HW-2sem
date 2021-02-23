@@ -1,18 +1,29 @@
 #include <functional>
 #include <iostream>
 #include <string>
-#include <unordered_set>
+#include <set>
 #include <iomanip>
+#include <random>
+#include <chrono>
+#include <vector>
 
-bool is_equal(double a, double b)
+std::set < std::string > make_random_words(std::size_t N, std::size_t length)
 {
-	return std::abs(a - b) <= 10 * std::numeric_limits <double> ::epsilon();
-}
+	std::uniform_int_distribution <> letter(97, 122);
+	std::default_random_engine e(static_cast <std::size_t> 
+		(std::chrono::system_clock::now().time_since_epoch().count()));
 
-double random()
-{
-	double result = std::rand();
-	return result += 1.0 / std::rand();
+	std::set < std::string > words;
+
+	for (std::string s(length, '_'); std::size(words) < N; words.insert(s))
+	{
+		for (auto& c : s)
+		{
+			c = letter(e);
+		}
+	}
+
+	return words;
 }
 
 template < typename T >
@@ -42,70 +53,43 @@ std::size_t hash_value(const Types& ... args) noexcept
 	return seed;
 }
 
-class Int_Double
-{
-private:
-	friend struct Int_Double_Hash;
-	friend struct Int_Double_Equal;
-
-public:
-	Int_Double(const int i, const double d) :
-		m_int(i), m_double(d)
-	{}
-
-	~Int_Double() noexcept = default;
-
-public:
-	friend std::ostream& operator << (std::ostream& stream, const Int_Double& i_d)
-	{
-		return (stream << i_d.m_int << ", " << i_d.m_double);
-	}
-
-private:
-	int m_int;
-	double m_double;
-};
-
-struct Int_Double_Hash
-{
-	std::size_t operator() (const Int_Double& i_d) const noexcept
-	{
-		return hash_value(i_d.m_int, i_d.m_double);
-	}
-};
-
-struct Int_Double_Equal
-{
-	bool operator() (const Int_Double& lhs, const Int_Double& rhs) const noexcept
-	{
-		return (lhs.m_int == rhs.m_int) && is_equal(lhs.m_double,rhs.m_double);
-	}
-};
-
 int main(int argc, char** argv)
 {
-	std::unordered_set < Int_Double, Int_Double_Hash, Int_Double_Equal > i_ds;
-	std::size_t N = 2048U;
-
-	i_ds.rehash(N);
+	const std::size_t N = 1'000'000U;
 
 	std::cout << "N = " << N << "\n\n" << std::left << std::setw(15) << std::setfill(' ') << "Elements"
 		<< std::setw(15) << std::setfill(' ') << "Collisions" << "\n\n";
 
-	std::size_t collisions = 0U;
+	std::vector<int> ints(N, 0);
+	std::vector<double> doubles(N, 0.0);
 
-	for (auto i = 0U; i < N*i_ds.max_load_factor(); ++i)
+	for (std::size_t i = 0U; i < N; ++i)
 	{
-		if (i % 10 == 0)
+		ints[i] = i;
+		doubles[i] = static_cast<double>(i) / static_cast<double>(N);
+	}
+
+	std::shuffle(ints.begin(), ints.end(), std::default_random_engine(static_cast <std::size_t>(std::chrono::system_clock::now().time_since_epoch().count())));
+	std::shuffle(ints.begin(), ints.end(), std::default_random_engine(static_cast <std::size_t>(std::chrono::system_clock::now().time_since_epoch().count())));
+	auto strings = make_random_words(1'000'000U, 10U);
+
+	std::set < std::size_t > hashes;
+
+	auto it = strings.begin();
+	auto collisions = 0U;
+
+	for (std::size_t i = 0U; i < N; ++i)
+	{
+		if (i % 1000 == 0)
 		{
 			std::cout << std::left << std::setw(15) << std::setfill(' ') << i
 				<< std::setw(15) << std::setfill(' ') << collisions << "\n";
 		}
-		if (i_ds.bucket_size(i_ds.bucket(*(i_ds.insert(Int_Double(std::rand(), random())).first))) > 1)
+		if (!(hashes.insert(hash_value(*it++, ints[i], doubles[i])).second))
 		{
 			collisions++;
 		}
 	}
 
-	return EXIT_SUCCESS;
+	return 0;
 }

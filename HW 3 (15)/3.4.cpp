@@ -209,16 +209,16 @@ int main()
 
 	auto strings = make_random_words(N, 10U);
 
-	std::map<Functions, Hash_details> functions;
-	functions[Functions::RSHash].m_func = RSHash;
-	functions[Functions::JSHash].m_func = JSHash;
-	functions[Functions::PJWHash].m_func = PJWHash;
-	functions[Functions::ELFHash].m_func = ELFHash;
-	functions[Functions::BKDRHash].m_func = BKDRHash;
-	functions[Functions::SDBMHash].m_func = SDBMHash;
-	functions[Functions::DJBHash].m_func = DJBHash;
-	functions[Functions::DEKHash].m_func = DEKHash;
-	functions[Functions::APHash].m_func = APHash;
+	std::map<Functions, Hash_details> hash_details;
+	hash_details[Functions::RSHash].m_func = RSHash;
+	hash_details[Functions::JSHash].m_func = JSHash;
+	hash_details[Functions::PJWHash].m_func = PJWHash;
+	hash_details[Functions::ELFHash].m_func = ELFHash;
+	hash_details[Functions::BKDRHash].m_func = BKDRHash;
+	hash_details[Functions::SDBMHash].m_func = SDBMHash;
+	hash_details[Functions::DJBHash].m_func = DJBHash;
+	hash_details[Functions::DEKHash].m_func = DEKHash;
+	hash_details[Functions::APHash].m_func = APHash;
 
 	auto it = strings.begin();
 
@@ -227,18 +227,18 @@ int main()
 		if (i % 1000 == 0)
 		{
 			std::cout << std::left << std::setw(11) << std::setfill(' ') << i;
-			for (auto j = 0U; j < functions.size(); ++j)
+			for (auto j = 0U; j < hash_details.size(); ++j)
 			{
-				std::cout << std::setw(8) << std::setfill(' ') << functions[static_cast<Functions>(j)].m_collisions;
+				std::cout << std::setw(8) << std::setfill(' ') << hash_details[static_cast<Functions>(j)].m_collisions;
 			}
 			std::cout << '\n';
 		}
-		for (auto j = 0U; j < functions.size(); ++j)
+		for (auto j = 0U; j < hash_details.size(); ++j)
 		{
-			if (!(functions[static_cast<Functions>(j)].m_set.insert
-			(functions[static_cast<Functions>(j)].m_func(it->c_str(), it->length())).second))
+			if (!(hash_details[static_cast<Functions>(j)].m_set.insert
+			(hash_details[static_cast<Functions>(j)].m_func(it->c_str(), it->length())).second))
 			{
-				functions[static_cast<Functions>(j)].m_collisions++;
+				hash_details[static_cast<Functions>(j)].m_collisions++;
 			}
 		}
 	}

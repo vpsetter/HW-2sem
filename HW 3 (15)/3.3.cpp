@@ -70,7 +70,7 @@ int main(int argc, char** argv)
 	}
 
 	std::shuffle(ints.begin(), ints.end(), std::default_random_engine(static_cast <std::size_t>(std::chrono::system_clock::now().time_since_epoch().count())));
-	std::shuffle(ints.begin(), ints.end(), std::default_random_engine(static_cast <std::size_t>(std::chrono::system_clock::now().time_since_epoch().count())));
+	std::shuffle(doubles.begin(), doubles.end(), std::default_random_engine(static_cast <std::size_t>(std::chrono::system_clock::now().time_since_epoch().count())));
 	auto strings = make_random_words(N, 10U);
 
 	std::set < std::size_t > hashes;

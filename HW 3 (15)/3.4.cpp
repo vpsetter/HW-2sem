@@ -6,6 +6,7 @@
 #include <random>
 #include <chrono>
 #include <vector>
+#include <map>
 
 std::set < std::string > make_random_words(std::size_t N, std::size_t length)
 {
@@ -208,16 +209,16 @@ int main()
 
 	auto strings = make_random_words(N, 10U);
 
-	std::vector<Hash_details> functions(9, Hash_details());
-	functions[static_cast<std::size_t>(Functions::RSHash)].m_func = RSHash;
-	functions[static_cast<std::size_t>(Functions::JSHash)].m_func = JSHash;
-	functions[static_cast<std::size_t>(Functions::PJWHash)].m_func = PJWHash;
-	functions[static_cast<std::size_t>(Functions::ELFHash)].m_func = ELFHash;
-	functions[static_cast<std::size_t>(Functions::BKDRHash)].m_func = BKDRHash;
-	functions[static_cast<std::size_t>(Functions::SDBMHash)].m_func = SDBMHash;
-	functions[static_cast<std::size_t>(Functions::DJBHash)].m_func = DJBHash;
-	functions[static_cast<std::size_t>(Functions::DEKHash)].m_func = DEKHash;
-	functions[static_cast<std::size_t>(Functions::APHash)].m_func = APHash;
+	std::map<Functions, Hash_details> functions;
+	functions[Functions::RSHash].m_func = RSHash;
+	functions[Functions::JSHash].m_func = JSHash;
+	functions[Functions::PJWHash].m_func = PJWHash;
+	functions[Functions::ELFHash].m_func = ELFHash;
+	functions[Functions::BKDRHash].m_func = BKDRHash;
+	functions[Functions::SDBMHash].m_func = SDBMHash;
+	functions[Functions::DJBHash].m_func = DJBHash;
+	functions[Functions::DEKHash].m_func = DEKHash;
+	functions[Functions::APHash].m_func = APHash;
 
 	auto it = strings.begin();
 
@@ -226,17 +227,18 @@ int main()
 		if (i % 1000 == 0)
 		{
 			std::cout << std::left << std::setw(11) << std::setfill(' ') << i;
-			for (auto j = 0U; j < 9; ++j)
+			for (auto j = 0U; j < functions.size(); ++j)
 			{
-				std::cout << std::setw(8) << std::setfill(' ') << functions[j].m_collisions;
+				std::cout << std::setw(8) << std::setfill(' ') << functions[static_cast<Functions>(j)].m_collisions;
 			}
 			std::cout << '\n';
 		}
-		for (auto j = 0U; j < 9; ++j)
+		for (auto j = 0U; j < functions.size(); ++j)
 		{
-			if (!(functions[j].m_set.insert(functions[j].m_func(it->c_str(), it->length())).second))
+			if (!(functions[static_cast<Functions>(j)].m_set.insert
+			(functions[static_cast<Functions>(j)].m_func(it->c_str(), it->length())).second))
 			{
-				functions[j].m_collisions++;
+				functions[static_cast<Functions>(j)].m_collisions++;
 			}
 		}
 	}

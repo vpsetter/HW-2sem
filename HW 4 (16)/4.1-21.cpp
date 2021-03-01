@@ -24,8 +24,7 @@ constexpr int integer_sqrt(int n) //rounded up
 int main()
 {
 	std::vector<int> v1(10U,0);
-	auto i = 1;
-	std::for_each(v1.begin(), v1.end(), [&i](auto& element) {element = i++; }); //#1
+	std::iota(v1.begin(), v1.end(), 1); //#1
 
 	std::copy(std::istream_iterator < int >(std::cin), std::istream_iterator < int >(),	std::back_inserter(v1)); //#2
 
@@ -104,6 +103,7 @@ int main()
 	std::sort(std::begin(v2), std::end(v2)); //#17
 
 	std::vector <int> v4;
+	std::sort(std::begin(v3), std::end(v3));
 	std::merge(std::begin(v1), std::end(v1), std::begin(v3), std::end(v3), std::back_inserter(v4)); //#18
 
 	std::sort(std::begin(v4), std::end(v4));

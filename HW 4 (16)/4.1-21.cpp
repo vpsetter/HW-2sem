@@ -38,7 +38,10 @@ template< int N > //N least primes
 constexpr std::array<int, N> primes()
 {
 	std::array<int, N> primes{};
-	primes[0] = 2;
+	if constexpr (N > 0)
+	{
+		primes[0] = 2;
+	}
 	for (auto current_number = 3, index = 1; index < N; ++index, current_number += 2)
 	{
 		for (; !(is_prime(current_number, primes, index)); current_number += 2);
@@ -141,7 +144,7 @@ int main()
 	const std::size_t size = 1'000'000U;
 	std::vector <int> v5(size, 0);
 
-	for (auto i = 0; i < N; ++i)
+	for (auto i = 0; i < size; ++i)
 	{
 		v5[i] = i;
 	}
@@ -152,7 +155,7 @@ int main()
 	std::sort(std::begin(v5), std::end(v5), [&sort_comp](int a, int b) {sort_comp++; return a > b; });
 	std::nth_element(std::begin(v6), std::next(std::begin(v6), 500'000), std::end(v6), [&nth_comp](int a, int b) {nth_comp++; return a > b; });
 
-	std::cout << "sort: " << sort_comp << ", nth: " << nth_comp << '\n';	
+	std::cout << "sort: " << sort_comp << ", nth: " << nth_comp << '\n'; // ~35M vs ~4M, #21
 
 	return 0;
 }

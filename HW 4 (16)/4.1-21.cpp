@@ -9,7 +9,7 @@
 #include <limits>
 #include <array>
 
-constexpr int integer_sqrt(int n)
+constexpr int integer_sqrt(int n) //rounded up
 {
 	int left = 1, right = n - 1;
 	int middle = left + ((right - left) / 2);
@@ -21,39 +21,11 @@ constexpr int integer_sqrt(int n)
 	return right;
 }
 
-template< int N >
-constexpr bool is_prime(int n, const std::array <int, N>& arr, int elem_num)
-{
-	for (auto i = 0; (i < elem_num) && arr[i] < integer_sqrt(n); ++i)
-	{
-		if (n % arr[i] == 0)
-		{
-			return false;
-		}
-	}
-	return true;
-}
-
-template< int N > //N least primes
-constexpr std::array<int, N> primes()
-{
-	std::array<int, N> primes{};
-	if constexpr (N > 0)
-	{
-		primes[0] = 2;
-	}
-	for (auto current_number = 3, index = 1; index < N; ++index, current_number += 2)
-	{
-		for (; !(is_prime(current_number, primes, index)); current_number += 2);
-		primes[index] = current_number;
-	}
-	return primes;
-}
-
 int main()
 {
-
-	std::vector<int> v1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }; //#1
+	std::vector<int> v1(10U,0);
+	auto i = 1;
+	std::for_each(v1.begin(), v1.end(), [&i](auto& element) {element = i++; }); //#1
 
 	std::copy(std::istream_iterator < int >(std::cin), std::istream_iterator < int >(),	std::back_inserter(v1)); //#2
 
@@ -62,7 +34,7 @@ int main()
 	std::shuffle(std::begin(v1), std::end(v1), dre); //#3
 
 	std::sort(std::begin(v1), std::end(v1));
-	v1.erase(std::unique(std::begin(v1), std::end(v1)), v1.end()); //#4
+	v1.erase(std::unique(std::begin(v1), std::end(v1)), std::end(v1)); //#4
 
 	auto odds = std::count_if(std::begin(v1), std::end(v1), [](auto x) {return x % 2; }); //#5
 
@@ -72,9 +44,27 @@ int main()
 
 	std::cout << "min: " << *min << ", max: " << *max << '\n';
 
-	auto primes10000 = primes<10'000>();
-	auto it = std::find_if(std::begin(v1), std::end(v1), 
-		[&primes10000](auto x) {return std::find(std::begin(primes10000), std::end(primes10000), x) != std::end(primes10000); });
+	auto is_prime = [](auto x)
+	{
+		if (x == 2)
+		{
+			return true;
+		}
+		if (x < 2 || !(x % 2))
+		{
+			return false;
+		}
+		for (auto i = 3; i <= integer_sqrt(x); i += 2)
+		{
+			if (!(x % i))
+			{
+				return false;
+			}
+		}
+		return true;
+	};
+
+	auto it = std::find_if(std::begin(v1), std::end(v1), is_prime);
 	if (it != std::end(v1))
 	{
 		std::cout << "prime: " << *it << '\n';
@@ -102,25 +92,19 @@ int main()
 
 	std::reverse(std::begin(v3), std::end(v3)); //#15
 	
-	
-	const std::size_t n = v3.size();
-	if (n > 2)
+	if (v3.size() > 2)
 	{
-		std::vector<int> vtop(3U, 0);
-		std::nth_element(std::begin(v3), std::next(std::begin(v3), n - 3), std::end(v3));
-		std::copy(std::next(std::begin(v3), n - 3), std::end(v3), std::begin(vtop));
-		if (vtop[1] > vtop[2])
-		{
-			std::swap(vtop[1], vtop[2]);
-		}
-		std::cout << "top 3: " << vtop[2] << ' ' << vtop[1] << ' ' << vtop[0] << '\n';
+		std::nth_element(std::begin(v3), std::prev(std::end(v3), 3), std::end(v3));
+		std::cout << "top 3: ";
+		std::copy(std::prev(std::end(v3), 3), std::end(v3), std::ostream_iterator < int >(std::cout, " "));
+		std::cout << '\n';
 	} //#16
 
 	std::sort(std::begin(v1), std::end(v1));
 	std::sort(std::begin(v2), std::end(v2)); //#17
 
-	std::vector <int> v4 = v1;
-	std::copy(std::begin(v3), std::end(v3), std::back_inserter(v4)); //#18
+	std::vector <int> v4;
+	std::merge(std::begin(v1), std::end(v1), std::begin(v3), std::end(v3), std::back_inserter(v4)); //#18
 
 	std::sort(std::begin(v4), std::end(v4));
 	auto range = std::equal_range(std::begin(v4), std::end(v4), 1); //#19

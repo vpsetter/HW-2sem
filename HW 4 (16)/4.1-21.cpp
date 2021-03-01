@@ -24,7 +24,7 @@ constexpr int integer_sqrt(int n) //rounded up
 int main()
 {
 	std::vector<int> v1(10U,0);
-	std::iota(v1.begin(), v1.end(), 1); //#1
+	std::iota(std::begin(v1), std::end(v1), 1); //#1
 
 	std::copy(std::istream_iterator < int >(std::cin), std::istream_iterator < int >(),	std::back_inserter(v1)); //#2
 

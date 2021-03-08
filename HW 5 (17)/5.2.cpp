@@ -106,31 +106,33 @@ int main()
 	ru_en[U'ÿ'] = U"ya";
 
 	std::string string;
-	std::getline(std::cin, string);
-
-	string = convert_locale_to_utf(string);
-
-	std::u32string u32string_ru = boost::locale::conv::utf_to_utf < char32_t, char >(string);
-
+	std::u32string u32string_ru;
 	std::u32string u32string_en;
 
-	std::for_each(std::begin(u32string_ru), std::end(u32string_ru),
-		[&u32string_en, &ru_en](auto symbol)
-		{if (symbol >= U'À' && symbol <= U'ÿ')
-			{
-				std::copy(std::begin(ru_en[symbol]), std::end(ru_en[symbol]), std::back_inserter(u32string_en));
-			}
-		else
-			{
-				u32string_en.push_back(symbol);
-			}
-		});
+	while (std::getline(std::cin, string))
+	{
+		string = convert_locale_to_utf(string);
+		u32string_ru = boost::locale::conv::utf_to_utf < char32_t, char >(string);
+		u32string_en.clear();
 
-	string = boost::locale::conv::utf_to_utf < char, char32_t >(u32string_en);
+		std::for_each(std::begin(u32string_ru), std::end(u32string_ru),
+			[&u32string_en, &ru_en](auto symbol)
+			{if (symbol >= U'À' && symbol <= U'ÿ')
+		{
+			std::copy(std::begin(ru_en[symbol]), std::end(ru_en[symbol]), std::back_inserter(u32string_en));
+		}
+			else
+		{
+			u32string_en.push_back(symbol);
+		}
+			});
 
-	string = convert_utf_to_locale(string);
+		string = boost::locale::conv::utf_to_utf < char, char32_t >(u32string_en);
 
-	std::cout << string << std::endl;
+		string = convert_utf_to_locale(string);
+
+		std::cout << string << "\n\n" ;
+	}
 
 	return 0;
 }

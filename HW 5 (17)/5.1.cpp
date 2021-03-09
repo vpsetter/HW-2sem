@@ -18,10 +18,10 @@ int main()
 	while (std::cin >> std::get_money(value, true))
 	{
 		std::cout.imbue(locale_in);
-		std::cout << std::put_money(value) << std::use_facet <std::moneypunct<char>>(locale_in).curr_symbol() << " <-> ";
+		std::cout << std::showbase << std::put_money(value) << " <-> ";
 		value *= rubles_per_euro;
 		std::cout.imbue(locale_out);
-		std::cout << std::put_money(value) << std::use_facet <std::moneypunct<char>>(locale_out).curr_symbol() << '\n';
+		std::cout << std::showbase << std::put_money(value) << '\n';
 	}
 	
 	return 0;

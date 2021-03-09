@@ -13,8 +13,7 @@ std::string convert_locale_to_utf(const std::string & string)
 	boost::locale::generator generator;
 	generator.locale_cache_enabled(true);
 
-	std::locale locale =
-		generator(boost::locale::util::get_system_locale());
+	std::locale locale = generator(boost::locale::util::get_system_locale());
 
 	return boost::locale::conv::to_utf < char >(string, locale);
 }
@@ -24,8 +23,7 @@ std::string convert_utf_to_locale(const std::string& string)
 	boost::locale::generator generator;
 	generator.locale_cache_enabled(true);
 
-	std::locale locale =
-		generator(boost::locale::util::get_system_locale());
+	std::locale locale = generator(boost::locale::util::get_system_locale());
 
 	return boost::locale::conv::from_utf < char >(string, locale);
 }

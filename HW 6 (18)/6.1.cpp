@@ -1,14 +1,12 @@
 #include <iostream>
-#include <iostream>
 #include <fstream>
-#include <string>
 #include <sstream>
 
 
 int main()
 {
-	std::fstream fin("test.txt", std::ios::in | std::ios::binary);
-	std::fstream fout("output 6.1.txt", std::ios::out | std::ios::trunc | std::ios::binary);
+	std::ifstream fin("test.txt", std::ios::in | std::ios::binary);
+	std::ofstream fout("output 6.1.txt", std::ios::out | std::ios::trunc | std::ios::binary);
 
 	std::istreambuf_iterator < char > istreambuf_iterator(fin);
 	std::istreambuf_iterator < char > end;

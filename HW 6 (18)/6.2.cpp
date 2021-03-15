@@ -24,9 +24,9 @@ int main()
 	fin.seekg(-1, std::ios::end);
 	int last = fin.tellg();
 
-	auto str_lenght = (last + 1 - first) / lines;
+	auto str_length = (last + 1 - first) / lines;
 
-	fin.seekg( (-1) * (lines - string_to_find) * str_lenght, std::ios::end);
+	fin.seekg( (-1) * (lines - string_to_find) * str_length, std::ios::end);
 
 	std::string string;
 

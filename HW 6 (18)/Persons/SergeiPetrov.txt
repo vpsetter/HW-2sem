@@ -1,0 +1,6 @@
+{
+    "first_name": "Sergei",
+    "is_married": false,
+    "last_name": "Petrov",
+    "year_of_birth": 2008
+}

@@ -6,6 +6,8 @@ int main(/*comment*/)
 	// comment	
 	int x; /* comment_1
 	comment_2 */	
-	int y; 
+	int y;
+
+	double d = 15.0/2.0; 
 } //
 /**/

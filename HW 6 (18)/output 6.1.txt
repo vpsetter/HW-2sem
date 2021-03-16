@@ -5,6 +5,8 @@ int main()
 	std::cout << "Hello, \"\"M\" /* commented */ world! // again :)" << std::endl; 
 		
 	int x; 	
-	int y; 
+	int y;
+
+	double d = 15.0/2.0; 
 } 
 

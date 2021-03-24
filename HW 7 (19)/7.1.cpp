@@ -35,7 +35,7 @@ public:
 		}
 		catch (...)
 		{
-			std::cout << "\nDTOR THREAD ERROR\n";
+			std::cerr << "\nDTOR THREAD ERROR\n";
 		}
 	}
 

@@ -43,55 +43,52 @@ private:
 	std::vector < std::thread >& m_threads;
 };
 
-template < typename Iterator, typename F>
-struct count_if_block
+template < typename F, typename Distr_t>
+struct count_points
 {
-	std::size_t operator()(Iterator first, Iterator last, F predicate)
+	std::size_t operator()(const std::size_t N, F predicate, Distr_t distribution)
 	{
-		return std::count_if(first, last, predicate);
+		std::mt19937_64 generator(std::hash<std::thread::id>{}(std::this_thread::get_id()));
+		std::pair <double, double> point = { 0.0, 0.0 };
+		std::size_t result = 0U;
+		for (auto i = 0U; i < N; ++i)
+		{
+			point.first = distribution(generator);
+			point.second = distribution(generator);
+			if (predicate(point))
+			{
+				++result;
+			}
+		}
+		return result;
 	}
 };
 
-template < typename Iterator, typename F >
-std::size_t parallel_count_if(Iterator first, Iterator last, F predicate)
+template <typename F, typename Distr_t >
+std::size_t parallel_count(const std::size_t points_num, F predicate, Distr_t distribution)
 {
-	const std::size_t length = std::distance(first, last);
-
-	if (!length)
-	{
-		return 0U;
-	}
-
 	const std::size_t hardware_threads = std::thread::hardware_concurrency();
+	const std::size_t num_threads =	(hardware_threads != 0U ? hardware_threads : 2U);
+	const std::size_t block_size = points_num / num_threads;
 
-	const std::size_t num_threads =	(hardware_threads != 0 ? hardware_threads : 2);
-
-	const std::size_t block_size = length / num_threads;
-
-	std::vector < std::future < std::size_t > > futures(num_threads - 1);
-	std::vector < std::thread > threads(num_threads - 1);
+	std::vector < std::future < std::size_t > > futures(num_threads - 1U);
+	std::vector < std::thread > threads(num_threads - 1U);
 
 	Threads_Guard guard(threads);
 
-	Iterator block_start = first;
-
-	for (std::size_t i = 0; i < (num_threads - 1); ++i)
+	for (std::size_t i = 0U; i < (num_threads - 1U); ++i)
 	{
-		Iterator block_end = block_start;
-		std::advance(block_end, block_size);
-
-		std::packaged_task < std::size_t(Iterator, Iterator, F) > task{count_if_block < Iterator, F >()};
+		std::packaged_task < std::size_t(std::size_t, F, Distr_t) > task{count_points <F, Distr_t>()};
 
 		futures[i] = task.get_future();
-		threads[i] = std::thread(std::move(task), block_start, block_end, predicate);
-		block_start = block_end;
+		threads[i] = std::thread(std::move(task), block_size, predicate, distribution);
 	}
 
-	std::size_t last_result = count_if_block < Iterator, F >()(block_start, last, predicate);
+	std::size_t last_result = count_points < F, Distr_t >()(points_num - (num_threads - 1U) * block_size, predicate, distribution);
 
 	std::size_t result = 0U;
 
-	for (std::size_t i = 0; i < (num_threads - 1); ++i)
+	for (std::size_t i = 0U; i < (num_threads - 1U); ++i)
 	{
 		result += futures[i].get();
 	}
@@ -101,59 +98,10 @@ std::size_t parallel_count_if(Iterator first, Iterator last, F predicate)
 	return result;
 }
 
-template < typename Iterator, typename Distr_t >
-struct point_gen_block
-{
-	void operator()(Iterator first, Iterator last, Distr_t distribution)
-	{
-		std::mt19937_64 generator(std::chrono::system_clock().now().time_since_epoch().count());
-		std::for_each(first, last, [&generator, &distribution](auto& point)
-			{point.first = distribution(generator); point.second = distribution(generator);});
-	}
-};
-
-template < typename Iterator, typename Distr_t >
-void parallel_point_gen(Iterator first, Iterator last, Distr_t distribution)
-{
-	const std::size_t length = std::distance(first, last);
-
-	const std::size_t hardware_threads = std::thread::hardware_concurrency();
-	const std::size_t num_threads = (hardware_threads != 0 ? hardware_threads : 2);
-
-	const std::size_t block_size = length / num_threads;
-
-	std::vector < std::future < void > > futures(num_threads - 1);
-	std::vector < std::thread > threads(num_threads - 1);
-
-	Threads_Guard guard(threads);
-
-	Iterator block_start = first;
-
-	for (std::size_t i = 0; i < (num_threads - 1); ++i)
-	{
-		Iterator block_end = block_start;
-		std::advance(block_end, block_size);
-
-		std::packaged_task < void (Iterator, Iterator, Distr_t) >
-			task{ point_gen_block < Iterator, Distr_t >() };
-
-		futures[i] = task.get_future();
-		threads[i] = std::thread(std::move(task), block_start, block_end, distribution);
-		block_start = block_end;
-	}
-
-	point_gen_block < Iterator, Distr_t >()(block_start, last, distribution);
-
-	for (std::size_t i = 0; i < (num_threads - 1); ++i)
-	{
-		futures[i].get();
-	}
-}
-
 int main()
 {
 	const double radius = 1.0;	
-	const std::size_t size = 80'000'000U;
+	const std::size_t points_num = 80'000'000U;
 
 	std::uniform_real_distribution <> urd(0.0, radius);
 
@@ -162,36 +110,20 @@ int main()
 	{
 		Timer<std::chrono::milliseconds> sequential_time("sequential time");
 
-		const unsigned long long seed = 482001Ull;
+		auto inside = count_points <decltype(lambda), decltype(urd)>()(points_num, lambda, urd);		
 
-		std::mt19937_64 mt(seed);
-
-		std::vector<std::pair<double, double>> points(size, { 0.0, 0.0 });
-
-		{
-			for (auto& point : points)
-			{
-				point.first = urd(mt);
-				point.second = urd(mt);
-			}
-		}
-
-		auto inside = std::count_if(std::begin(points), std::end(points), lambda);		
-
-		double pi = 4.0 * radius * radius * inside / size;
+		double pi = 4.0 * radius * radius * inside / points_num;
 		std::cout << "pi = " << pi << '\n';
 	}
 
 	{
 		Timer<std::chrono::milliseconds> concurrent_time("concurrent time");
 
-		std::vector<std::pair<double, double>> points(size, { 0.0, 0.0 });
+		std::vector<std::pair<double, double>> points(points_num, { 0.0, 0.0 });
 
-		parallel_point_gen(std::begin(points), std::end(points), urd);
+		auto inside = parallel_count(points_num, lambda, urd);
 
-		auto inside = parallel_count_if(std::begin(points), std::end(points), lambda);
-
-		double pi = 4.0 * radius * radius * inside / size;
+		double pi = 4.0 * radius * radius * inside / points_num;
 		std::cout << "pi = " << pi << '\n';
 	}
 

@@ -126,6 +126,13 @@ private:
 	mutable std::mutex m_mutex;
 };
 
+void default_conditions(std::atomic<bool>& flag, std::atomic<std::size_t>& push_counter, std::atomic<std::size_t>& pop_counter)
+{
+	flag.store(false);
+	push_counter = 0U;
+	pop_counter = 0U;
+}
+
 template<typename Container>
 void producer(std::size_t M, Container &container, std::atomic<std::size_t> &push_counter, std::atomic<bool>& flag)
 {
@@ -159,7 +166,7 @@ void consumer(std::size_t M, Container& container, std::atomic<std::size_t> &pop
 
 template<typename Container>
 void parallel_operation(std::size_t N, std::size_t M, Container &container,
-	std::atomic<std::size_t>& push_counter, std::atomic<std::size_t>& pop_counter, std::atomic<bool>& flag)
+	std::atomic<std::size_t>& push_counter, std::atomic<std::size_t>& pop_counter, std::atomic<bool>& flag, const char * timer_name)
 {
 	std::vector < std::thread > threads;
 
@@ -168,17 +175,12 @@ void parallel_operation(std::size_t N, std::size_t M, Container &container,
 		threads.push_back(std::thread(producer<Container>, M, std::ref(container), std::ref(push_counter), std::ref(flag)));
 		threads.push_back(std::thread(consumer<Container>, M, std::ref(container), std::ref(pop_counter), std::ref(flag)));
 	}
-
+	Timer<std::chrono::microseconds>timer(timer_name);
 	flag.store(true);
 
 	std::for_each(threads.begin(), threads.end(), std::mem_fn(&std::thread::join));
-}
-
-void default_conditions(std::atomic<bool>& flag, std::atomic<std::size_t>& push_counter, std::atomic<std::size_t>& pop_counter)
-{
-	flag.store(false);
-	push_counter = 0U;
-	pop_counter = 0U;
+	std::cout << ((pop_counter == push_counter) ? "success " : "failure ");
+	default_conditions(flag, push_counter, pop_counter);
 }
 
 int main()
@@ -195,32 +197,36 @@ int main()
 		{
 			std::cout << "N = " << N << " M = " << M << '\n';
 			{
-				Timer<std::chrono::microseconds>timer("queue_lock");
 				Threadsafe_Queue<int> queue;
-				parallel_operation(N, M, queue, push_counter, pop_counter, flag);
-				std::cout << ((pop_counter == push_counter) ? "success " : "failure ");
-				default_conditions(flag, push_counter, pop_counter);
+				for (auto i = 0; i < 128; ++i)
+				{
+					queue.push(i);
+				}
+				parallel_operation(N, M, queue, push_counter, pop_counter, flag, "queue_lock");				
 			}
 			{
-				Timer<std::chrono::microseconds>timer("stack_lock");
 				Threadsafe_Stack<int> stack;
-				parallel_operation(N, M, stack, push_counter, pop_counter, flag);
-				std::cout << ((pop_counter == push_counter) ? "success " : "failure ");
-				default_conditions(flag, push_counter, pop_counter);
+				for (auto i = 0; i < 128; ++i)
+				{
+					stack.push(i);
+				}
+				parallel_operation(N, M, stack, push_counter, pop_counter, flag, "stack_lock");
 			}
 			{
-				Timer<std::chrono::microseconds>timer("queue_lockfree");
 				boost::lockfree::queue<int> queue(128);
-				parallel_operation(N, M, queue, push_counter, pop_counter, flag);
-				std::cout << ((pop_counter == push_counter) ? "success " : "failure ");
-				default_conditions(flag, push_counter, pop_counter);
+				for (auto i = 0; i < 128; ++i)
+				{
+					queue.push(i);
+				}
+				parallel_operation(N, M, queue, push_counter, pop_counter, flag, "queue_lockfree");
 			}
 			{
-				Timer<std::chrono::microseconds>timer("stack_lockfree");
 				boost::lockfree::stack<int> stack(128);
-				parallel_operation(N, M, stack, push_counter, pop_counter, flag);
-				std::cout << ((pop_counter == push_counter) ? "success " : "failure ");
-				default_conditions(flag, push_counter, pop_counter);
+				for (auto i = 0; i < 128; ++i)
+				{
+					stack.push(i);
+				}
+				parallel_operation(N, M, stack, push_counter, pop_counter, flag, "stack_lockfree");
 			}
 		}
 	}

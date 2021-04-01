@@ -1,200 +1,200 @@
 N = 1 M = 100
-success queue_lock: 3469 microseconds
-success stack_lock: 1068 microseconds
-success queue_lockfree: 1142 microseconds
-success stack_lockfree: 865 microseconds
+success queue_lock: 1934 microseconds
+success stack_lock: 466 microseconds
+success queue_lockfree: 263 microseconds
+success stack_lockfree: 194 microseconds
 N = 1 M = 1000
-success queue_lock: 4872 microseconds
-success stack_lock: 4239 microseconds
-success queue_lockfree: 3827 microseconds
-success stack_lockfree: 2752 microseconds
+success queue_lock: 234 microseconds
+success stack_lock: 291 microseconds
+success queue_lockfree: 370 microseconds
+success stack_lockfree: 328 microseconds
 N = 1 M = 10000
-success queue_lock: 30575 microseconds
-success stack_lock: 29812 microseconds
-success queue_lockfree: 26986 microseconds
-success stack_lockfree: 13478 microseconds
+success queue_lock: 1907 microseconds
+success stack_lock: 4319 microseconds
+success queue_lockfree: 3278 microseconds
+success stack_lockfree: 2447 microseconds
 N = 1 M = 100000
-success queue_lock: 228888 microseconds
-success stack_lock: 234999 microseconds
-success queue_lockfree: 247100 microseconds
-success stack_lockfree: 125235 microseconds
+success queue_lock: 15352 microseconds
+success stack_lock: 11707 microseconds
+success queue_lockfree: 24678 microseconds
+success stack_lockfree: 19827 microseconds
 N = 1 M = 1000000
-success queue_lock: 2156995 microseconds
-success stack_lock: 2322264 microseconds
-success queue_lockfree: 2318549 microseconds
-success stack_lockfree: 1115530 microseconds
+success queue_lock: 103635 microseconds
+success stack_lock: 78150 microseconds
+success queue_lockfree: 227140 microseconds
+success stack_lockfree: 174582 microseconds
 N = 2 M = 100
-success queue_lock: 815 microseconds
-success stack_lock: 764 microseconds
-success queue_lockfree: 719 microseconds
-success stack_lockfree: 614 microseconds
+success queue_lock: 528 microseconds
+success stack_lock: 476 microseconds
+success queue_lockfree: 220 microseconds
+success stack_lockfree: 193 microseconds
 N = 2 M = 1000
-success queue_lock: 5366 microseconds
-success stack_lock: 6153 microseconds
-success queue_lockfree: 3526 microseconds
-success stack_lockfree: 9761 microseconds
+success queue_lock: 755 microseconds
+success stack_lock: 821 microseconds
+success queue_lockfree: 891 microseconds
+success stack_lockfree: 809 microseconds
 N = 2 M = 10000
-success queue_lock: 54659 microseconds
-success stack_lock: 48202 microseconds
-success queue_lockfree: 34573 microseconds
-success stack_lockfree: 22083 microseconds
+success queue_lock: 3502 microseconds
+success stack_lock: 6951 microseconds
+success queue_lockfree: 4778 microseconds
+success stack_lockfree: 5085 microseconds
 N = 2 M = 100000
-success queue_lock: 425004 microseconds
-success stack_lock: 441690 microseconds
-success queue_lockfree: 332420 microseconds
-success stack_lockfree: 222367 microseconds
+success queue_lock: 28965 microseconds
+success stack_lock: 25171 microseconds
+success queue_lockfree: 42374 microseconds
+success stack_lockfree: 38575 microseconds
 N = 2 M = 1000000
-success queue_lock: 4240227 microseconds
-success stack_lock: 4471559 microseconds
-success queue_lockfree: 3217186 microseconds
-success stack_lockfree: 2266600 microseconds
+success queue_lock: 224738 microseconds
+success stack_lock: 188726 microseconds
+success queue_lockfree: 428856 microseconds
+success stack_lockfree: 350501 microseconds
 N = 3 M = 100
-success queue_lock: 1596 microseconds
-success stack_lock: 1502 microseconds
-success queue_lockfree: 3627 microseconds
-success stack_lockfree: 1232 microseconds
+success queue_lock: 679 microseconds
+success stack_lock: 3904 microseconds
+success queue_lockfree: 587 microseconds
+success stack_lockfree: 570 microseconds
 N = 3 M = 1000
-success queue_lock: 9209 microseconds
-success stack_lock: 10622 microseconds
-success queue_lockfree: 18336 microseconds
-success stack_lockfree: 13873 microseconds
+success queue_lock: 886 microseconds
+success stack_lock: 951 microseconds
+success queue_lockfree: 7818 microseconds
+success stack_lockfree: 1120 microseconds
 N = 3 M = 10000
-success queue_lock: 97367 microseconds
-success stack_lock: 87760 microseconds
-success queue_lockfree: 52718 microseconds
-success stack_lockfree: 39145 microseconds
+success queue_lock: 7823 microseconds
+success stack_lock: 7416 microseconds
+success queue_lockfree: 7143 microseconds
+success stack_lockfree: 9866 microseconds
 N = 3 M = 100000
-success queue_lock: 809942 microseconds
-success stack_lock: 866902 microseconds
-success queue_lockfree: 484949 microseconds
-success stack_lockfree: 361956 microseconds
+success queue_lock: 43513 microseconds
+success stack_lock: 34660 microseconds
+success queue_lockfree: 65652 microseconds
+success stack_lockfree: 61313 microseconds
 N = 3 M = 1000000
-success queue_lock: 8015251 microseconds
-success stack_lock: 8887170 microseconds
-success queue_lockfree: 4868621 microseconds
-success stack_lockfree: 3505605 microseconds
+success queue_lock: 372423 microseconds
+success stack_lock: 323493 microseconds
+success queue_lockfree: 639705 microseconds
+success stack_lockfree: 592260 microseconds
 N = 4 M = 100
-success queue_lock: 2461 microseconds
-success stack_lock: 2671 microseconds
-success queue_lockfree: 3705 microseconds
-success stack_lockfree: 1505 microseconds
+success queue_lock: 5344 microseconds
+success stack_lock: 796 microseconds
+success queue_lockfree: 586 microseconds
+success stack_lockfree: 666 microseconds
 N = 4 M = 1000
-success queue_lock: 15917 microseconds
-success stack_lock: 33146 microseconds
-success queue_lockfree: 9253 microseconds
-success stack_lockfree: 7120 microseconds
+success queue_lock: 810 microseconds
+success stack_lock: 703 microseconds
+success queue_lockfree: 4371 microseconds
+success stack_lockfree: 5979 microseconds
 N = 4 M = 10000
-success queue_lock: 267436 microseconds
-success stack_lock: 270601 microseconds
-success queue_lockfree: 68631 microseconds
-success stack_lockfree: 53399 microseconds
+success queue_lock: 6697 microseconds
+success stack_lock: 5203 microseconds
+success queue_lockfree: 10378 microseconds
+success stack_lockfree: 12860 microseconds
 N = 4 M = 100000
-success queue_lock: 2638958 microseconds
-success stack_lock: 2714297 microseconds
-success queue_lockfree: 670609 microseconds
-success stack_lockfree: 523078 microseconds
+success queue_lock: 62074 microseconds
+success stack_lock: 51334 microseconds
+success queue_lockfree: 89274 microseconds
+success stack_lockfree: 76101 microseconds
 N = 4 M = 1000000
-success queue_lock: 26688203 microseconds
-success stack_lock: 27428906 microseconds
-success queue_lockfree: 11134088 microseconds
-success stack_lockfree: 9429881 microseconds
+success queue_lock: 530035 microseconds
+success stack_lock: 467487 microseconds
+success queue_lockfree: 892798 microseconds
+success stack_lockfree: 805869 microseconds
 N = 5 M = 100
-success queue_lock: 5696 microseconds
-success stack_lock: 5467 microseconds
-success queue_lockfree: 2245 microseconds
-success stack_lockfree: 5184 microseconds
+success queue_lock: 835 microseconds
+success stack_lock: 6500 microseconds
+success queue_lockfree: 721 microseconds
+success stack_lockfree: 828 microseconds
 N = 5 M = 1000
-success queue_lock: 56071 microseconds
-success stack_lock: 48654 microseconds
-success queue_lockfree: 13975 microseconds
-success stack_lockfree: 10813 microseconds
+success queue_lock: 3809 microseconds
+success stack_lock: 1268 microseconds
+success queue_lockfree: 6663 microseconds
+success stack_lockfree: 3330 microseconds
 N = 5 M = 10000
-success queue_lock: 448733 microseconds
-success stack_lock: 449998 microseconds
-success queue_lockfree: 126220 microseconds
-success stack_lockfree: 99880 microseconds
+success queue_lock: 11888 microseconds
+success stack_lock: 6694 microseconds
+success queue_lockfree: 12452 microseconds
+success stack_lockfree: 10308 microseconds
 N = 5 M = 100000
-success queue_lock: 4271316 microseconds
-success stack_lock: 4169441 microseconds
-success queue_lockfree: 1139487 microseconds
-success stack_lockfree: 856743 microseconds
+success queue_lock: 76192 microseconds
+success stack_lock: 62916 microseconds
+success queue_lockfree: 111438 microseconds
+success stack_lockfree: 102706 microseconds
 N = 5 M = 1000000
-success queue_lock: 35854269 microseconds
-success stack_lock: 34430079 microseconds
-success queue_lockfree: 14892137 microseconds
-success stack_lockfree: 10750218 microseconds
+success queue_lock: 691893 microseconds
+success stack_lock: 619420 microseconds
+success queue_lockfree: 1127602 microseconds
+success stack_lockfree: 1060234 microseconds
 N = 6 M = 100
-success queue_lock: 7522 microseconds
-success stack_lock: 8002 microseconds
-success queue_lockfree: 4252 microseconds
-success stack_lockfree: 10141 microseconds
+success queue_lock: 1461 microseconds
+success stack_lock: 10946 microseconds
+success queue_lockfree: 761 microseconds
+success stack_lockfree: 12865 microseconds
 N = 6 M = 1000
-success queue_lock: 69133 microseconds
-success stack_lock: 66168 microseconds
-success queue_lockfree: 18082 microseconds
-success stack_lockfree: 22316 microseconds
+success queue_lock: 13208 microseconds
+success stack_lock: 1568 microseconds
+success queue_lockfree: 10487 microseconds
+success stack_lockfree: 8987 microseconds
 N = 6 M = 10000
-success queue_lock: 566566 microseconds
-success stack_lock: 601491 microseconds
-success queue_lockfree: 149506 microseconds
-success stack_lockfree: 119026 microseconds
+success queue_lock: 21026 microseconds
+success stack_lock: 10334 microseconds
+success queue_lockfree: 22683 microseconds
+success stack_lockfree: 14805 microseconds
 N = 6 M = 100000
-success queue_lock: 4972256 microseconds
-success stack_lock: 4618762 microseconds
-success queue_lockfree: 1301612 microseconds
-success stack_lockfree: 996150 microseconds
+success queue_lock: 91173 microseconds
+success stack_lock: 76311 microseconds
+success queue_lockfree: 135800 microseconds
+success stack_lockfree: 125686 microseconds
 N = 6 M = 1000000
-success queue_lock: 42179762 microseconds
-success stack_lock: 43994896 microseconds
-success queue_lockfree: 20730749 microseconds
-success stack_lockfree: 14304453 microseconds
+success queue_lock: 873982 microseconds
+success stack_lock: 751267 microseconds
+success queue_lockfree: 1382033 microseconds
+success stack_lockfree: 1272776 microseconds
 N = 7 M = 100
-success queue_lock: 8245 microseconds
-success stack_lock: 8295 microseconds
-success queue_lockfree: 3673 microseconds
-success stack_lockfree: 9744 microseconds
+success queue_lock: 6007 microseconds
+success stack_lock: 800 microseconds
+success queue_lockfree: 764 microseconds
+success stack_lockfree: 783 microseconds
 N = 7 M = 1000
-success queue_lock: 63931 microseconds
-success stack_lock: 66515 microseconds
-success queue_lockfree: 20935 microseconds
-success stack_lockfree: 14213 microseconds
+success queue_lock: 2068 microseconds
+success stack_lock: 5013 microseconds
+success queue_lockfree: 1754 microseconds
+success stack_lockfree: 10557 microseconds
 N = 7 M = 10000
-success queue_lock: 567994 microseconds
-success stack_lock: 622645 microseconds
-success queue_lockfree: 159462 microseconds
-success stack_lockfree: 121308 microseconds
+success queue_lock: 18154 microseconds
+success stack_lock: 9632 microseconds
+success queue_lockfree: 16096 microseconds
+success stack_lockfree: 19561 microseconds
 N = 7 M = 100000
-success queue_lock: 5790484 microseconds
-success stack_lock: 5787438 microseconds
-success queue_lockfree: 1438230 microseconds
-success stack_lockfree: 1069890 microseconds
+success queue_lock: 103752 microseconds
+success stack_lock: 89172 microseconds
+success queue_lockfree: 159168 microseconds
+success stack_lockfree: 147861 microseconds
 N = 7 M = 1000000
-success queue_lock: 49099249 microseconds
-success stack_lock: 48568509 microseconds
-success queue_lockfree: 21303400 microseconds
-success stack_lockfree: 13626585 microseconds
+success queue_lock: 1005472 microseconds
+success stack_lock: 889208 microseconds
+success queue_lockfree: 1605460 microseconds
+success stack_lockfree: 1508029 microseconds
 N = 8 M = 100
-success queue_lock: 8249 microseconds
-success stack_lock: 7647 microseconds
-success queue_lockfree: 3050 microseconds
-success stack_lockfree: 5250 microseconds
+success queue_lock: 3476 microseconds
+success stack_lock: 10102 microseconds
+success queue_lockfree: 1531 microseconds
+success stack_lockfree: 13193 microseconds
 N = 8 M = 1000
-success queue_lock: 63065 microseconds
-success stack_lock: 62682 microseconds
-success queue_lockfree: 29939 microseconds
-success stack_lockfree: 15188 microseconds
+success queue_lock: 15093 microseconds
+success stack_lock: 1386 microseconds
+success queue_lockfree: 13492 microseconds
+success stack_lockfree: 2352 microseconds
 N = 8 M = 10000
-success queue_lock: 606088 microseconds
-success stack_lock: 615159 microseconds
-success queue_lockfree: 173833 microseconds
-success stack_lockfree: 135257 microseconds
+success queue_lock: 14226 microseconds
+success stack_lock: 12417 microseconds
+success queue_lockfree: 18605 microseconds
+success stack_lockfree: 16848 microseconds
 N = 8 M = 100000
-success queue_lock: 5896306 microseconds
-success stack_lock: 5686921 microseconds
-success queue_lockfree: 1706436 microseconds
-success stack_lockfree: 1237763 microseconds
+success queue_lock: 146609 microseconds
+success stack_lock: 107734 microseconds
+success queue_lockfree: 182071 microseconds
+success stack_lockfree: 173054 microseconds
 N = 8 M = 1000000
-success queue_lock: 54152767 microseconds
-success stack_lock: 55925177 microseconds
-success queue_lockfree: 58887892 microseconds
-success stack_lockfree: 10716759 microseconds
+success queue_lock: 1154086 microseconds
+success stack_lock: 1015657 microseconds
+success queue_lockfree: 1837991 microseconds
+success stack_lockfree: 1710766 microseconds

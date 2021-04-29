@@ -3,53 +3,11 @@
 #include <thread>
 #include <vector>
 #include <random>
-#include <atomic>
-#include <execution>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Text.hpp>
 
 using namespace sf;
-
-template <typename T>
-class atomic_wrapper
-{
-public:
-	atomic_wrapper() : m_atomic(){}
-
-	atomic_wrapper(const std::atomic<T>& atomic) : m_atomic(atomic.load()){}
-
-	atomic_wrapper(const T& var) : m_atomic(var) {}
-
-	atomic_wrapper(const atomic_wrapper& other) : m_atomic(other.m_atomic.load()){}
-
-	atomic_wrapper& operator=(const atomic_wrapper& other)
-	{
-		m_atomic.store(other.m_atomic.load());
-		return *this;
-	}
-
-
-	operator T() const
-	{
-		return m_atomic;
-	};
-
-	atomic_wrapper& operator++()
-	{
-		++m_atomic;
-		return *this;
-	}
-
-	atomic_wrapper& operator--()
-	{
-		--m_atomic;
-		return *this;
-	}
-
-private:
-	std::atomic<T> m_atomic;
-};
 
 class Visualizer_Brownian_Motion
 {
@@ -65,9 +23,10 @@ private:
 	struct Particle
 	{
 		Particle() = default;
-		Particle(std::size_t x, std::size_t y, Direction dir) : position(x, y), direction(dir) {}
+		Particle(int coord_1, int coord_2, Direction dir) : x(coord_1), y(coord_2), direction(dir) {}
 
-		std::pair <std::size_t, std::size_t> position;
+		int x;
+		int y;
 		Direction direction;
 	};
 
@@ -75,46 +34,44 @@ public:
 	Visualizer_Brownian_Motion() :
 		m_window(VideoMode(m_width, m_height), m_window_name),
 		m_uid(0,3), m_bd(0.1),
-		m_field(m_width, std::vector<atomic_wrapper<std::size_t>>(m_height, 0U))
+		m_field(m_squares_in_column, std::vector<std::size_t>(m_squares_in_column, 0U))
 	{
-		std::uniform_int_distribution uid(0U, m_width - 1);
+		std::uniform_int_distribution uid(0, static_cast<int>(m_width) - 1);
+		m_particles.reserve(m_particles_num);
 		for (auto i = 0U; i < m_particles_num; ++i)
 		{
 			auto x = uid(m_mt);
 			auto y = uid(m_mt);
 			auto dir = static_cast<Direction>(m_uid(m_mt));
-			++m_field[x][y];
-			m_particles.push_back(Particle(x, y, dir));
+			++m_field[x/m_squares_size][y/m_squares_size];
+			m_particles.emplace(std::end(m_particles), Particle(x, y, dir));
 		}
 	};
 
 	~Visualizer_Brownian_Motion() noexcept = default;
 
 private:
-	std::size_t square_count(std::size_t i, std::size_t j)
-	{
-		std::atomic<std::size_t> result = 0U;
-		auto begin_x = std::next(std::begin(m_field), i * m_squares_size);
-		auto end_x = std::next(begin_x, m_squares_size);
-		std::for_each(std::execution::par, begin_x, end_x, [this, j, &result](auto& column)
-			{
-				auto begin_y = std::next(std::begin(column), j * m_squares_size);
-				auto end_y = std::next(begin_y, m_squares_size);
-
-				result += std::accumulate(begin_y, end_y, 0U);
-			});
-		return result;
-	}
 
 	void draw()
 	{
-		RectangleShape rect(Vector2f(m_squares_size, m_squares_size));
+		for(auto& column : m_field)
+		{
+			for (auto& cell : column)
+			{
+				cell = 0U;
+			}
+		}
+		std::for_each(std::begin(m_particles), std::end(m_particles), [this](const Particle& particle)
+			{
+				++m_field[particle.x / m_squares_size][particle.y / m_squares_size];
+			});
+		RectangleShape big_rect(Vector2f(m_squares_size, m_squares_size));
 		for (auto i = 0U; i < m_squares_in_column; ++i)
 		{
 			for (auto j = 0U; j < m_squares_in_column; ++j)
 			{
 				Color color;
-				const std::size_t particles_num = square_count(i,j);
+				const std::size_t particles_num = m_field[i][j];
 				if (!particles_num)
 				{
 					color = Color::Black;
@@ -125,11 +82,18 @@ private:
 					saturation = (saturation > m_colors_num - 1 ? m_colors_num - 1 : saturation);
 					color = m_colors[saturation];
 				}
-				rect.setPosition(static_cast <float> (i * m_squares_size), static_cast <float> (j * m_squares_size));
-				rect.setFillColor(color);
-				m_window.draw(rect);
+				big_rect.setPosition(static_cast <float> (i * m_squares_size), static_cast <float> (j * m_squares_size));
+				big_rect.setFillColor(color);
+				m_window.draw(big_rect);
 			}
 		}
+		RectangleShape small_rect(Vector2f(1.0f, 1.0f));
+		std::for_each(std::begin(m_particles), std::end(m_particles), [this, &small_rect](const Particle& particle)
+			{
+				small_rect.setPosition(static_cast<float> (particle.x), static_cast<float>(particle.y));
+				small_rect.setFillColor(m_particle_color);
+				m_window.draw(small_rect);
+			});
 		m_window.display();
 	}
 
@@ -138,51 +102,43 @@ private:
 		switch (particle.direction)
 		{
 		case Direction::left:
-			if (particle.position.first == 0U) 
+			if (particle.x == 0U) 
 			{
 				particle.direction = Direction::right;
 			}
 			else 
 			{
-				--m_field[particle.position.first][particle.position.second];
-				--particle.position.first;
-				++m_field[particle.position.first][particle.position.second];
+				--particle.x;
 			}			
 			break;
 		case Direction::right:
-			if (particle.position.first == m_width - 1U)
+			if (particle.x == m_width - 1)
 			{
 				particle.direction = Direction::left;
 			}
 			else
 			{
-				--m_field[particle.position.first][particle.position.second];
-				++particle.position.first;
-				++m_field[particle.position.first][particle.position.second];
+				++particle.x;
 			}
 			break;
 		case Direction::up:
-			if (particle.position.second == 0U)
+			if (particle.y == 0U)
 			{
 				particle.direction = Direction::down;
 			}
 			else
 			{
-				--m_field[particle.position.first][particle.position.second];
-				--particle.position.second;
-				++m_field[particle.position.first][particle.position.second];
+				--particle.y;
 			}
 			break;
 		case Direction::down:
-			if (particle.position.second == m_height - 1U)
+			if (particle.y == m_height - 1)
 			{
 				particle.direction = Direction::up;
 			}
 			else
 			{
-				--m_field[particle.position.first][particle.position.second];
-				++particle.position.second;
-				++m_field[particle.position.first][particle.position.second];
+				++particle.y;
 			}
 			break;
 		default:
@@ -196,7 +152,7 @@ private:
 
 	void move()
 	{
-		std::for_each(std::execution::par, std::begin(m_particles), std::end(m_particles), [this](auto& particle) {step(particle); });
+		std::for_each(std::begin(m_particles), std::end(m_particles), [this](auto& particle) {step(particle); });
 	}
 
 public:
@@ -230,7 +186,7 @@ private:
 	inline static const std::size_t m_particles_num = 1000U;
 
 	std::vector<Particle> m_particles;
-	std::vector<std::vector<atomic_wrapper<std::size_t>>> m_field;
+	std::vector<std::vector<std::size_t>> m_field;
 
 	const std::string m_window_name = "Brownian motion";
 	RenderWindow m_window;
@@ -239,6 +195,7 @@ private:
 	const std::array<Color, m_colors_num> m_colors = 
 	{Color(50, 0, 0), Color(100, 0, 0), Color(150, 0, 0), Color(200, 0, 0), Color(250, 0, 0)};
 	inline static const std::size_t m_change_color_particles_num = 5U;
+	const Color m_particle_color = { 0, 255, 255 };
 
 	inline static const std::size_t m_squares_in_column = 10U;
 	inline static const std::size_t m_squares_size = m_height / m_squares_in_column;
